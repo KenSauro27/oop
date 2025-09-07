@@ -1,0 +1,36 @@
+<?php
+class DbConnection
+{
+    private $server = "localhost";
+    private $database = "school_db";
+    private $user = "root";
+    private $pass = "";
+    protected $connection;
+
+    public function __construct()
+    {
+        $this->openConnection();
+    }
+
+    // Establish connection
+    private function openConnection()
+    {
+        try {
+            $dsn = "mysql:host={$this->server};dbname={$this->database}";
+            $this->connection = new PDO($dsn, $this->user, $this->pass);
+            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // echo "Database connected!"; // optional
+        } catch (PDOException $error) {
+            die("Database connection error: " . $error->getMessage());
+        }
+    }
+
+    // Execute SQL query
+    public function execute($query, $values = [])
+    {
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute($values);
+        return $stmt;
+    }
+}
+?>
